@@ -5,46 +5,66 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/css/reset.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.css">
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
-  </head>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <style>
+
+    .circle-div {
+        height: 400px;
+        background-color: #eff8fa;
+        display: inline-block;
+        width: 300px;
+    }
+
+    .numberCircle {
+        border-radius: 50%;
+        width: 200px;
+
+        height: 200px;
+        padding: 8
+        background-color: white;
+        border: 2px solid #666;
+        color: #666;
+        text-align: cent
+        font: 72px Arial, sans-serif !important;
+        font-size: 72px !important;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 200px;
+    }
+    .text {
+
+        font: 72px;
+    }
+    .span-css {
+        background-color: white;
+        border: 1px solid #7a8195;
+        border-radius: 5px;
+        color: #7a8195;
+        display: block;
+        margin-bottom: 25px;
+        padding: 10px;
+        max-width: 60%;
+        margin-top: 5%;
+        text-align: center;
+    }
+
+    </style>
+</head>
   <body class="mixpanel-platform-body">
-    <div class="mixpanel-platform-section">
-      <div id="eventSelect" style="float: left;"></div>
-      <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
-      <div id="propSelect" style="float: left;"></div>
-      <div id="dateSelect" style="float: right;"></div>
-      <div style="clear: both;"></div>
-      <div id="graph"></div>
+    <div class="app-launches circle-div">
+        <span class="span-css center-block"> Daily Active Users</span>
+        <div class="numberCircle center-block"></div>
     </div>
-    <div id="table"></div>
     <script>
-      var eventSelect = $('#eventSelect').MPEventSelect();
-      var propSelect  = $('#propSelect').MPPropertySelect();
-      var dateSelect  = $('#dateSelect').MPDatepicker();
-      var eventGraph  = $('#graph').MPChart({chartType: 'line'});
-      var eventTable  = $('#table').MPTable({
-        showPercentages: true,
-        firstColHeader: 'Event'
-      });
-
-      var runQuery = function() {
-        var eventName = eventSelect.MPEventSelect('value'),
-            propName  = propSelect.MPPropertySelect('value'),
-            dateRange = dateSelect.MPDatepicker('value');
-
-        if (eventName) {
-          MP.api.segment(eventName, propName, dateRange).done(function(results) {
-            eventGraph.MPChart('setData', results);
-            eventTable.MPTable('setData', results);
-          });
-        }
-      };
-      eventSelect.on('change', function(e, eventName) {
-        propSelect.MPPropertySelect('setEvent', eventName);
-        $("#by").show();
-        runQuery();
-      });
-      propSelect.on('change', runQuery);
-      dateSelect.on('change', runQuery);
+    
+    var EVENT_NAME = "Game Played"
+    
+      MP.api.segment(EVENT_NAME, {type: "unique", unit:"day"}).done(function(results){
+        mpdata = MP.Data.inst(results.values())
+        
+        var circle = $('.numberCircle')
+        circle.text(Math.round(mpdata.avg().values()[EVENT_NAME]).toString())
+      })
     </script>
   </body>
 </html>
